@@ -12,7 +12,7 @@ Se houver qualquer outra dúvida ou problema, é só procurar a monitoria ou pos
 1. Clone o repositório
 
    - Copie o endereço SSH do repositório e use-o para cloná-lo em sua máquina:
-     - Por exemplo: `git clone git@github.com:tryber/sd-0x-project-x.git`.
+     - Por exemplo: `git clone git@github.com:tryber/sd-0x-project-x.git`
 
      <details><summary>Local do endereço SSH na página inicial do repositório:</summary>
 
