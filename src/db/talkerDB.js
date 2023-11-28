@@ -8,6 +8,10 @@ const readData = async () => {
   return JSON.parse(data);
 };
 
+const composeData = async (talkers) => {
+  await fs.writeFile(dbPath, JSON.stringify(talkers));
+};
+
 const getAll = async () => {
   const talker = await readData();
   return talker;
@@ -19,7 +23,16 @@ const getById = async (id) => {
   return talker;
 };
 
+const createTalker = async (talker) => {
+  const talkers = await readData();
+  const newTalker = { ...talker, id: talkers.length + 1 };
+  talkers.push(newTalker);
+  await composeData((talkers));
+  return newTalker;
+};
+
 module.exports = {
   getAll,
   getById,
+  createTalker,
 };
