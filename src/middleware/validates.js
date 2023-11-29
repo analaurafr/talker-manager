@@ -54,7 +54,7 @@ const validateRate = (req, res, next) => {
   }
   next();
 };
-  
+
 module.exports = {
   validateAge,
   validateTalk,

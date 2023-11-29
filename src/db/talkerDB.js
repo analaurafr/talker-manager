@@ -13,8 +13,8 @@ const composeData = async (talkers) => {
 };
 
 const getAll = async () => {
-  const talker = await readData();
-  return talker;
+  const talkers = await readData();
+  return talkers;
 };
 
 const getById = async (id) => {
@@ -39,9 +39,27 @@ const upTalker = async (talker) => {
   return talker;
 };
 
+const dltTalker = async (id) => {
+  const talkers = await readData();
+  const index = talkers.findIndex((t) => t.id === Number(id));
+  talkers.splice(index, 1);
+  await composeData(talkers);
+};
+
+const searchTalker = async (searchTerm) => {
+  const talkers = await readData();
+  const filteredTalkers = searchTerm
+    ? talkers.filter((t) => t.name.includes(searchTerm))
+    : talkers;
+  return filteredTalkers;
+};
+
 module.exports = {
   getAll,
   getById,
   createTalker,
   upTalker,
+  dltTalker,
+  readData,
+  searchTalker,
 };
