@@ -1,4 +1,4 @@
-const validateToken = (req, res, next) => {
+const validateAuth = (req, res, next) => {
   const { authorization } = req.headers;
   if (!authorization) {
     return res.status(401).json({ message: 'Token não encontrado' });
@@ -9,4 +9,4 @@ const validateToken = (req, res, next) => {
   next();
 };
 
-module.exports = validateToken;
+module.exports = validateAuth;
