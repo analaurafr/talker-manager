@@ -31,8 +31,17 @@ const createTalker = async (talker) => {
   return newTalker;
 };
 
+const upTalker = async (talker) => {
+  const talkers = await readData();
+  const index = talkers.findIndex((t) => t.id === talker.id);
+  talkers[index] = talker;
+  await composeData(talkers);
+  return talker;
+};
+
 module.exports = {
   getAll,
   getById,
   createTalker,
+  upTalker,
 };
