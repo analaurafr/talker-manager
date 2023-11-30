@@ -1,11 +1,14 @@
 const { Router } = require('express');
-const { getAll, getById, createTalker, upTalker, dltTalker, 
-  searchTalker } = require('../db/talkerDB');
+
+const { getAll, getById, createTalker, upTalker, dltTalker,  
+  readData } = require('../db/talkerDB');
 
 const validateName = require('../middleware/validateName');
 const validateAuth = require('../middleware/validateAuth');
 const { validateAge, validateTalk, validateRate, 
   validateWatchedAt } = require('../middleware/validates');
+const validateSearch = require('../middleware/validateSearch');
+const validateDate = require('../middleware/validateDate');
 
 const talkerRoutes = Router();
 
@@ -14,25 +17,24 @@ talkerRoutes.get('/', async (req, res) => {
   return res.status(200).json(talkers);
 });
 
-talkerRoutes.get('/search', validateAuth, async (req, res) => {
-  try {
-    const { q } = req.query;
-    if (!q || q.trim() === '') {
-      const allTalkers = await getAll();
-      return res.status(200).json(allTalkers);
-    }
-    const talkers = await searchTalker(q);
+talkerRoutes.get('/search', 
+  validateAuth, validateSearch, validateDate,
+  async (req, res) => {
+    const { q, rate, date } = req.query;
+    const data = await readData();
+    let filteredTalkers = data;
 
-    if (talkers.length === 0) {
-      return res.status(200).json([]);
+    if (q) { 
+      filteredTalkers = filteredTalkers.filter((talker) => talker.name.includes(q)); 
     }
-
-    return res.status(200).json(talkers);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: 'Erro interno do servidor' });
-  }
-});
+    if (rate) {
+      filteredTalkers = filteredTalkers.filter((talker) => talker.talk.rate === Number(rate));
+    }
+    if (date) {
+      filteredTalkers = filteredTalkers.filter((talker) => talker.talk.watchedAt === date);
+    } 
+    return res.status(200).json(filteredTalkers); 
+  });
 
 talkerRoutes.get('/:id', async (req, res) => {
   const { id } = req.params;

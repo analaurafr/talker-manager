@@ -1,3 +1,5 @@
+const { readData } = require('../db/talkerDB');
+
 const validateAge = (req, res, next) => {
   const { age } = req.body;
   if (!age) return res.status(400).json({ message: 'O campo "age" é obrigatório' });
@@ -55,9 +57,17 @@ const validateRate = (req, res, next) => {
   next();
 };
 
+const talkerSearch = async (q, rate, date) => {
+  const talkers = await readData();
+  return talkers.filter((t) => (q ? t.name.includes(q) : true))
+    .filter((t) => (rate ? t.talk.rate.includes(rate) : true))
+    .filter((t) => (date ? t.talk.date.includes(date) : true));
+};
+
 module.exports = {
   validateAge,
   validateTalk,
   validateWatchedAt,
   validateRate,
+  talkerSearch,
 };
