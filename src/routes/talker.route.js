@@ -1,7 +1,8 @@
 const { Router } = require('express');
 
 const { getAll, getById, createTalker, upTalker, dltTalker,  
-  readData } = require('../db/talkerDB');
+  readData, 
+  composeData } = require('../db/talkerDB');
 
 const validateName = require('../middleware/validateName');
 const validateAuth = require('../middleware/validateAuth');
@@ -9,6 +10,7 @@ const { validateAge, validateTalk, validateRate,
   validateWatchedAt } = require('../middleware/validates');
 const validateSearch = require('../middleware/validateSearch');
 const validateDate = require('../middleware/validateDate');
+const validateRates = require('../middleware/validateRates');
 
 const talkerRoutes = Router();
 
@@ -51,6 +53,22 @@ talkerRoutes.post('/', validateAuth,
     const talkers = await createTalker({ name, age, talk });
     return res.status(201).json(talkers);
   });
+
+talkerRoutes.patch('/rate/:id', validateAuth, validateRates, async (req, res) => {
+  const { id } = req.params;
+  const { rate } = req.body;
+  
+  const talkers = await readData();
+  const talkerIndex = talkers.findIndex((talk) => talk.id === Number(id));
+  
+  if (talkerIndex === -1) {
+    return res.status(404).json({ message: 'Palestrante não encontrado' });
+  }
+  
+  talkers[talkerIndex].talk.rate = Number(rate);
+  await composeData(talkers);
+  return res.status(204).end();
+});
 
 talkerRoutes.put('/:id', validateAuth, validateName, validateAge, validateTalk, validateWatchedAt, 
   validateRate, async (req, res) => {

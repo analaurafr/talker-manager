@@ -62,4 +62,5 @@ module.exports = {
   dltTalker,
   readData,
   searchTalker,
+  composeData,
 };
